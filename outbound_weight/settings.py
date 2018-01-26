@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'outbound_weight.apps.calculator'
+    'outbound_weight.apps.api'
 ]
 
 MIDDLEWARE_CLASSES = [

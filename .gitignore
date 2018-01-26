@@ -216,3 +216,4 @@ gen
 /fba_warning.txt
 /fba_error.txt
 /fba_info.txt
+*.sqlite3

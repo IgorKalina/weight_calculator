@@ -16,6 +16,7 @@ class CalculateFulfillmentFee:
         self.size_tier = None
         self.order_date = None
         self.today = datetime.now().date()
+        print 'Message from {}'.format(__name__)
 
     def dimensional_weight(self, length, width, height):
         dimensional_weight_divisor = self.get_weight_divisor_by_date()
@@ -62,22 +63,30 @@ class CalculateFulfillmentFee:
     def __set_product_size_tier(self, product_size_tier):
         self.size_tier = product_size_tier
 
-    def calculate_outbound_shipping_weight(self, unit_weight, medium_side, longest_side, smallest_side, size_tier, order_date):
+    def calculate_outbound_shipping_weight(self, unit_weight, medium_side, longest_side, smallest_side, size_tier, order_date=None):
         # set all the necessary data
-        self.__set_order_date(order_date=order_date)
+        if order_date:
+            self.__set_order_date(order_date=order_date)
         self.__set_product_size_tier(product_size_tier=size_tier)
         self.__set_dimensions(weight=unit_weight, length=longest_side,
                               width=smallest_side, height=medium_side)
 
         normalized_dimensions = self.normalize_data()
-        dimensional_weight = self.dimensional_weight(length=self.length, width=self.width, height=self.height)
+        dimensional_weight = self.dimensional_weight(length=normalized_dimensions['length'],
+                                                     width=normalized_dimensions['width'],
+                                                     height=normalized_dimensions['height'])
 
-        if self.size_tier == SM_STD:
+        if SM_STD in self.size_tier:
+            print self.size_tier
             return round(normalized_dimensions['weight'] + Decimal('0.25'))
-        elif self.size_tier == SP_OVERSIZE:
+        elif SP_OVERSIZE in self.size_tier:
+            print self.size_tier
             return round(normalized_dimensions['weight'] + Decimal('1.0'))
 
-        if self.size_tier in [LG_STD, LG_OVERSIZE, SM_OVERSIZE, MD_OVERSIZE]:
+        if LG_STD in self.size_tier or LG_OVERSIZE in self.size_tier or SM_OVERSIZE in self.size_tier or MD_OVERSIZE in self.size_tier:
+            print self.size_tier
             if normalized_dimensions['weight'] < (dimensional_weight + normalized_dimensions['weight']):
+                print 'BIP...'
                 return round(dimensional_weight + normalized_dimensions['weight'])
+            print 'BOOP...'
             return round(normalized_dimensions['weight'])

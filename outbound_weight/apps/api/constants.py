@@ -55,3 +55,5 @@ PACKAGING_WEIGHT = (
     ('Oversize-media-and-non-media', Decimal('1.0')),  #  The greater of the unit weight or dimensional weight + packaging weight (total rounded up to the nearest whole pound)
     ('Special-oversize', Decimal('1.0'))  # Unit weight + packaging weight (total rounded up to the nearest whole pound)
 )
+
+ORDER_DATE_FMT = '%Y-%m-%d'

@@ -16,6 +16,10 @@ class CalculateOutboundData(View):
     """
 
     def get(self, request):
+        if Calculator.objects.filter(**request.GET.dict()).exists():
+            instance = Calculator.objects.get(**request.GET.dict())
+            return JsonResponse({'asin': instance.asin, 'weight': str(instance.weight), 'period': instance.period},
+                                content_type='application/json')
         request_data = dict(
             unit_weight=request.GET.get('unit_weight'),
             medium_side=request.GET.get('medium_side'),
@@ -24,15 +28,13 @@ class CalculateOutboundData(View):
             size_tier=request.GET.get('size_tier'),
             order_date=datetime.strptime(request.GET.get('order_date'), ORDER_DATE_FMT)
         )
-        if Calculator.objects.filter(**request_data).exists():
-            instance = Calculator.objects.get(**request_data)
-            return HttpResponse(json.dumps({'weight': str(instance.weight), 'period': instance.period}), content_type='application/json')
         api = FBACalculatorAPI(**request_data)
         weight = api.get_outbound_shipping_weight()
         period = api.get_calculations_period()
         request_data.update(weight=weight, period=period)
-        Calculator.objects.create(**request_data)
-        return HttpResponse(json.dumps({'weight': weight, 'period': period}), content_type='application/json')
+        Calculator.objects.update_or_create(asin=request.GET.get('asin'), defaults=request_data)
+        return JsonResponse({'asin': request.GET.get('asin'), 'weight': weight, 'period': period},
+                            content_type='application/json')
 
 
 class BulkCalculateOutboundData(View):
@@ -43,18 +45,15 @@ class BulkCalculateOutboundData(View):
     def get(self, request):
         request_data = dict()
         calculation_result = dict()
+
         if request.GET.get('list_of_items'):
             list_of_items = parse_str_to_list(request.GET.get('list_of_items'))
             for item in list_of_items:
-                print '>>>>', item
+                item = {k: str(v) for k, v in item.items()}
                 if Calculator.objects.filter(**item).exists():
-                    print 'exists'
-                    # TODO: modify to return the json with items
                     instance = Calculator.objects.get(**item)
-                    return JsonResponse(json.dumps({'weight': str(instance.weight),
-                                                    'period': instance.period,
-                                                    'asin': instance.asin}),
-                                        content_type='application/json')
+                    calculation_result[instance.asin] = dict(weight=str(instance.weight),
+                                                             period=instance.period)
                 request_data[item['asin']] = dict(
                     unit_weight=item.get('unit_weight'),
                     longest_side=item.get('longest_side'),
@@ -72,7 +71,8 @@ class BulkCalculateOutboundData(View):
                 )
                 item.update(calculation_result.get(asin))
                 Calculator.objects.update_or_create(asin=asin, defaults=item)
-                print calculation_result
-            return JsonResponse({'calculation_result': calculation_result}, content_type='application/json')
 
-        return JsonResponse({'calculations_result': 'No_result'}, content_type='application/json')
+        if calculation_result:
+            return JsonResponse({'calculations_result': calculation_result}, content_type='application/json')
+
+        return JsonResponse({'calculation_result': 'No_result'}, content_type='application/json')

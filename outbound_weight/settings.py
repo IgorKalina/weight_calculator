@@ -28,7 +28,9 @@ SECRET_KEY = '%3@s+1_7maa^m8(gp#c+ut)^4ta!_75h_(enqwe(^&+iy%#+!a'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '104.131.109.98', 'vps137724.vps.ovh.ca',
+                 'vps137724.vps.ovh.ca:8080', 'vps137724.vps.ovh.ca:8000',
+                 'vps137724.vps.ovh.ca:8081', 'vps137724.vps.ovh.ca:8001']
 
 
 # Application definition

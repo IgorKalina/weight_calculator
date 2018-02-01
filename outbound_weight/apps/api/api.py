@@ -6,9 +6,8 @@ class FBACalculatorAPI:
     """
     Class that provides API methods for calculations
     """
-    def __init__(
-            self, unit_weight, medium_side, longest_side,
-            smallest_side, size_tier, order_date=None):
+    def __init__(self, unit_weight, medium_side, longest_side,
+                 smallest_side, size_tier, order_date=None):
 
         self.unit_weight = unit_weight
         self.medium_side = medium_side

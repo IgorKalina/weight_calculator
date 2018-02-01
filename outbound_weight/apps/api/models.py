@@ -4,6 +4,7 @@ from django.db import models
 
 
 class Calculator(models.Model):
+    asin = models.CharField(max_length=16, null=True)
     unit_weight = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     medium_side = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     longest_side = models.DecimalField(max_digits=10, decimal_places=2, default=0)

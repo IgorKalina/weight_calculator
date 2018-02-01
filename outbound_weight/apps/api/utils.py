@@ -1,5 +1,7 @@
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
+import json
+import urlparse
 
 from .constants import (
     DIMENSIONAL_WEIGHT_DIVISOR,
@@ -90,3 +92,14 @@ class CalculateFulfillmentFee:
                 return round(dimensional_weight + normalized_dimensions['weight'])
             print 'BOOP...'
             return round(normalized_dimensions['weight'])
+
+
+def parse_str_to_list(data_str):
+    """
+    convert data string to a list with dictionaries
+    :param data_str:
+    :return: <type list>
+    """
+
+    json_string = data_str.replace("'", "\"")
+    return json.loads(json_string)

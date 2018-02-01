@@ -14,6 +14,9 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+PROJECT_ROOT = os.path.realpath(here(".."))
+root = lambda *x: os.path.realpath(os.path.join(os.path.abspath(PROJECT_ROOT), *x))
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +28,9 @@ SECRET_KEY = '%3@s+1_7maa^m8(gp#c+ut)^4ta!_75h_(enqwe(^&+iy%#+!a'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '104.131.109.98', 'vps137724.vps.ovh.ca',
+                 'vps137724.vps.ovh.ca:8080', 'vps137724.vps.ovh.ca:8000',
+                 'vps137724.vps.ovh.ca:8081', 'vps137724.vps.ovh.ca:8001']
 
 
 # Application definition
@@ -111,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'US/Eastern'
 
 USE_I18N = True
 
@@ -124,3 +129,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = root('static_root')
